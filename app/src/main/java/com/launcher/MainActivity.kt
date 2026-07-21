@@ -432,23 +432,34 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleSwipeLeft() {
         if (!settings.swipeLeftEnabled) return
-        if (!launchSwipeApp(settings.swipeLeftApp)) openCameraApp(this)
+        // Swiping left pulls the app in from the right edge.
+        if (!launchSwipeApp(settings.swipeLeftApp, R.anim.slide_in_right)) {
+            openCameraApp(this)
+            if (!isEinkDisplay()) overridePendingTransition(R.anim.slide_in_right, 0)
+        }
     }
 
     private fun handleSwipeRight() {
         if (!settings.swipeRightEnabled) return
-        if (!launchSwipeApp(settings.swipeRightApp)) openDialerApp(this)
+        // Swiping right pulls the app in from the left edge.
+        if (!launchSwipeApp(settings.swipeRightApp, R.anim.slide_in_left)) {
+            openDialerApp(this)
+            if (!isEinkDisplay()) overridePendingTransition(R.anim.slide_in_left, 0)
+        }
     }
 
     /** Value is "pkg|activity|user|shortcutId"; trailing parts are optional. */
-    private fun launchSwipeApp(value: String?): Boolean {
+    private fun launchSwipeApp(value: String?, enterAnim: Int): Boolean {
         if (value.isNullOrBlank()) return false
         val parts = value.split("|")
+        val opts = if (isEinkDisplay()) null
+        else android.app.ActivityOptions.makeCustomAnimation(this, enterAnim, 0).toBundle()
         return appRepo.launch(
             parts[0],
             parts.getOrNull(1)?.ifBlank { null },
             parts.getOrNull(2)?.ifBlank { null } ?: USER_PERSONAL,
             parts.getOrNull(3)?.ifBlank { null },
+            opts,
         )
     }
 

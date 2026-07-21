@@ -233,12 +233,13 @@ class AppRepository(private val context: Context, private val settings: Settings
         activityClassName: String?,
         userToken: String,
         shortcutId: String? = null,
+        opts: android.os.Bundle? = null,
     ): Boolean {
         val user = context.userFromToken(userToken)
         if (shortcutId != null) {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                 try {
-                    launcherApps.startShortcut(packageName, shortcutId, null, null, user)
+                    launcherApps.startShortcut(packageName, shortcutId, null, opts, user)
                     true
                 } catch (e: Exception) {
                     Log.w(TAG, "Unable to launch shortcut $shortcutId", e)
@@ -255,7 +256,7 @@ class AppRepository(private val context: Context, private val settings: Settings
                 ?.componentName
                 ?: activities.firstOrNull()?.componentName
                 ?: return false
-            launcherApps.startMainActivity(component, user, null, null)
+            launcherApps.startMainActivity(component, user, null, opts)
             true
         } catch (e: Exception) {
             Log.w(TAG, "Unable to launch $packageName", e)
