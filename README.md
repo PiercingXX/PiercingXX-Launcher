@@ -4,9 +4,13 @@ A minimal, text-only Android launcher built for focus. No icons, no
 wallpaper clutter — just the apps you actually use, a fast search
 drawer, and a clean AMOLED-black home screen.
 
-| Home | App Drawer | Settings |
-|------|-----------|----------|
-| ![Home](docs/images/home.png) | ![App Drawer](docs/images/app-drawer.png) | ![Settings](docs/images/settings.png) |
+| Home | Folders | Drawer Search |
+|------|---------|---------------|
+| ![Home](docs/images/pixel-10-pro.png) | ![Folders](docs/images/folder-dropdown.png) | ![Drawer Search](docs/images/drawer-search.png) |
+
+### Theme presets
+
+![Theme presets](docs/images/theme-presets.jpg)
 
 ## Features
 

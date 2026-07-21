@@ -18,11 +18,11 @@ class ThemeManager(private val context: Context, private val settingsRepo: Setti
     // Built-in theme presets, in display order for the preview strip
     val presets = linkedMapOf(
         "amoled" to ThemeColors(0xFF000000.toInt(), 0xFFFFFFFF.toInt()),
-        "graphite" to ThemeColors(0xFF333333.toInt(), 0xFFFFFFFF.toInt()),
-        "forest" to ThemeColors(0xFF1B4D2E.toInt(), 0xFFFFFFFF.toInt()),
-        "ocean" to ThemeColors(0xFF0F4C75.toInt(), 0xFFFFFFFF.toInt()),
-        "paper" to ThemeColors(0xFFFFFAF0.toInt(), 0xFF1A1A1A.toInt()),
-        "mist" to ThemeColors(0xFFE0E0E0.toInt(), 0xFF1A1A1A.toInt())
+        "graphite" to ThemeColors(0xFF111827.toInt(), 0xFFFFFFFF.toInt()),
+        "forest" to ThemeColors(0xFF10261B.toInt(), 0xFFFFFFFF.toInt()),
+        "ocean" to ThemeColors(0xFF0F1C2E.toInt(), 0xFFFFFFFF.toInt()),
+        "paper" to ThemeColors(0xFFF3EEE2.toInt(), 0xFF1A1A1A.toInt()),
+        "mist" to ThemeColors(0xFFE6EDF5.toInt(), 0xFF1A1A1A.toInt())
     )
     
     fun getCurrentColors(): ThemeColors {

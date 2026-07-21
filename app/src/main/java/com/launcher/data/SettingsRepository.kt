@@ -185,7 +185,7 @@ class SettingsRepository(context: Context) {
 
     var customBgColor: Int
         get() = prefs.getString(KEY_CUSTOM_BG_COLOR, null)?.toLongOrNull(16)?.toInt()
-            ?: 0xFF333333.toInt()
+            ?: 0xFF111827.toInt()
         set(value) = prefs.edit { putString(KEY_CUSTOM_BG_COLOR, value.toUInt().toString(16)) }
 
     var appearanceMode: String
