@@ -20,6 +20,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.launcher.theme.applyLauncherFont
+import com.launcher.theme.applyLauncherTheme
 import com.launcher.util.hideStatusBar
 import com.launcher.util.showStatusBar
 import com.launcher.backup.BackupManager
@@ -365,6 +366,7 @@ class SettingsActivity : AppCompatActivity() {
                 .setView(android.widget.ScrollView(context).apply { addView(container) })
                 .setPositiveButton(android.R.string.ok, null)
                 .show()
+                .applyLauncherTheme(app.themeManager, app.settings.fontFamily)
         }
 
         private fun dp(value: Int): Int =
@@ -398,6 +400,7 @@ class SettingsActivity : AppCompatActivity() {
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()
+                .applyLauncherTheme(app.themeManager, app.settings.fontFamily)
         }
 
         private fun showCustomColorDialog() {
@@ -427,6 +430,7 @@ class SettingsActivity : AppCompatActivity() {
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()
+                .applyLauncherTheme(app.themeManager, app.settings.fontFamily)
         }
     }
 }

@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.launcher.data.AppInfo
+import com.launcher.theme.applyLauncherFont
 import kotlinx.coroutines.launch
 
 /**
@@ -37,6 +38,7 @@ class AppPickerActivity : AppCompatActivity() {
                 setPadding(dp(16), dp(10), dp(16), dp(10))
                 isClickable = true
                 setOnClickListener { onTap() }
+                applyLauncherFont(app.settings.fontFamily)
             })
         }
 

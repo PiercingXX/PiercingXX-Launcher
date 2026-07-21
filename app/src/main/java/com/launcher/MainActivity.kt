@@ -29,6 +29,7 @@ import com.launcher.databinding.ActivityHomeBinding
 import com.launcher.menu.ItemActionMenu
 import com.launcher.theme.ThemeManager
 import com.launcher.theme.applyLauncherFont
+import com.launcher.theme.applyLauncherTheme
 import com.launcher.util.USER_PERSONAL
 import com.launcher.util.expandNotificationDrawer
 import com.launcher.util.hideNavigationBar
@@ -358,6 +359,7 @@ class MainActivity : AppCompatActivity() {
                 settings.hideDefaultLauncherPrompt = true
             }
             .show()
+            .applyLauncherTheme(themeManager, settings.fontFamily)
     }
 
     private fun isDefaultLauncher(): Boolean {

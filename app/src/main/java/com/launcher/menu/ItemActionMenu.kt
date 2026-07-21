@@ -16,7 +16,7 @@ import com.launcher.data.SettingsRepository
 import com.launcher.folder.FolderManager
 import com.launcher.notification.AppMuteListenerService
 import com.launcher.theme.ThemeManager
-import com.launcher.theme.applyLauncherFont
+import com.launcher.theme.applyLauncherTheme
 import com.launcher.util.openAppInfo
 import com.launcher.util.requestUninstall
 import com.launcher.util.showToast
@@ -161,6 +161,7 @@ class ItemActionMenu(
                     }
                     .setNegativeButton(android.R.string.cancel, null)
                     .show()
+                    .applyLauncherTheme(themeManager, settings.fontFamily)
             },
         )
         showThemedList(folderName, items)
@@ -202,6 +203,7 @@ class ItemActionMenu(
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()
+                .applyLauncherTheme(themeManager, settings.fontFamily)
         }
     }
 
@@ -212,7 +214,7 @@ class ItemActionMenu(
                 items[which].second()
             }
             .show()
-            .applyLauncherFont(settings.fontFamily)
+            .applyLauncherTheme(themeManager, settings.fontFamily)
     }
 
     private fun showRenameDialog(currentLabel: String, onSave: (String) -> Unit) {
@@ -244,7 +246,7 @@ class ItemActionMenu(
         }
 
         dialog.show()
-        dialog.applyLauncherFont(settings.fontFamily)
+        dialog.applyLauncherTheme(themeManager, settings.fontFamily)
         input.requestFocus()
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT)
@@ -274,5 +276,6 @@ class ItemActionMenu(
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
+            .applyLauncherTheme(themeManager, settings.fontFamily)
     }
 }
