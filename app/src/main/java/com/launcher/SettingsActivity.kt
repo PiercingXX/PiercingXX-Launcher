@@ -110,6 +110,57 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
+        /** Swipe pref ("swipe_left_app"/"swipe_right_app") being picked, while AppPicker is open. */
+        private var pendingSwipeKey: String? = null
+
+        private val swipeAppLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            val key = pendingSwipeKey ?: return@registerForActivityResult
+            pendingSwipeKey = null
+            if (result.resultCode != android.app.Activity.RESULT_OK) return@registerForActivityResult
+            val data = result.data ?: return@registerForActivityResult
+            val value = if (data.getBooleanExtra(AppPickerActivity.EXTRA_CLEARED, false)) {
+                null
+            } else {
+                val pkg = data.getStringExtra(AppPickerActivity.EXTRA_PACKAGE).orEmpty()
+                if (pkg.isBlank()) return@registerForActivityResult
+                listOf(
+                    pkg,
+                    data.getStringExtra(AppPickerActivity.EXTRA_ACTIVITY).orEmpty(),
+                    data.getStringExtra(AppPickerActivity.EXTRA_USER).orEmpty(),
+                    data.getStringExtra(AppPickerActivity.EXTRA_SHORTCUT_ID).orEmpty(),
+                ).joinToString("|")
+            }
+            if (key == "swipe_left_app") app.settings.swipeLeftApp = value
+            else app.settings.swipeRightApp = value
+            updateSwipeSummaries()
+        }
+
+        private fun pickSwipeApp(key: String, current: String?) {
+            pendingSwipeKey = key
+            swipeAppLauncher.launch(
+                Intent(requireContext(), AppPickerActivity::class.java)
+                    .putExtra(AppPickerActivity.EXTRA_ALLOW_CLEAR, current != null)
+            )
+        }
+
+        /** Shows the chosen app's label; empty when nothing is set. */
+        private fun updateSwipeSummaries() {
+            fun labelFor(value: String?): String {
+                val pkg = value?.substringBefore("|").orEmpty()
+                if (pkg.isBlank()) return ""
+                return runCatching {
+                    val pm = requireContext().packageManager
+                    pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString()
+                }.getOrDefault(pkg)
+            }
+            findPreference<Preference>("swipe_left_app")?.summary =
+                labelFor(app.settings.swipeLeftApp)
+            findPreference<Preference>("swipe_right_app")?.summary =
+                labelFor(app.settings.swipeRightApp)
+        }
+
         /** Widget whose tap action is being picked, while AppPicker is open. */
         private var pendingTapWidget: String? = null
 
@@ -201,6 +252,13 @@ class SettingsActivity : AppCompatActivity() {
             findPreference<Preference>("custom_color")?.setOnPreferenceClickListener {
                 showCustomColorDialog(); true
             }
+            findPreference<Preference>("swipe_left_app")?.setOnPreferenceClickListener {
+                pickSwipeApp("swipe_left_app", app.settings.swipeLeftApp); true
+            }
+            findPreference<Preference>("swipe_right_app")?.setOnPreferenceClickListener {
+                pickSwipeApp("swipe_right_app", app.settings.swipeRightApp); true
+            }
+            updateSwipeSummaries()
             findPreference<Preference>("version")?.summary = BuildConfig.VERSION_NAME
             findPreference<Preference>("appearance_mode")?.setOnPreferenceChangeListener { _, value ->
                 app.themeManager.setAppearanceMode(value.toString()); true

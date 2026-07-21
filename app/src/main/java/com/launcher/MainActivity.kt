@@ -430,22 +430,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleSwipeLeft() {
         if (!settings.swipeLeftEnabled) return
-        val packageName = settings.swipeLeftApp
-        if (packageName.isNullOrBlank() ||
-            !appRepo.launch(packageName, null, USER_PERSONAL)
-        ) {
-            openCameraApp(this)
-        }
+        if (!launchSwipeApp(settings.swipeLeftApp)) openCameraApp(this)
     }
 
     private fun handleSwipeRight() {
         if (!settings.swipeRightEnabled) return
-        val packageName = settings.swipeRightApp
-        if (packageName.isNullOrBlank() ||
-            !appRepo.launch(packageName, null, USER_PERSONAL)
-        ) {
-            openDialerApp(this)
-        }
+        if (!launchSwipeApp(settings.swipeRightApp)) openDialerApp(this)
+    }
+
+    /** Value is "pkg|activity|user|shortcutId"; trailing parts are optional. */
+    private fun launchSwipeApp(value: String?): Boolean {
+        if (value.isNullOrBlank()) return false
+        val parts = value.split("|")
+        return appRepo.launch(
+            parts[0],
+            parts.getOrNull(1)?.ifBlank { null },
+            parts.getOrNull(2)?.ifBlank { null } ?: USER_PERSONAL,
+            parts.getOrNull(3)?.ifBlank { null },
+        )
     }
 
     private fun lockScreen() {

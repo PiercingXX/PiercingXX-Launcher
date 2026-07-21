@@ -187,8 +187,12 @@ object DefaultLayoutSeeder {
         }
         if (slot > 1) settings.slotCount = slot - 1
 
-        plan.swipeLeft?.let { settings.swipeLeftApp = it.packageName }
-        plan.swipeRight?.let { settings.swipeRightApp = it.packageName }
+        plan.swipeLeft?.let {
+            settings.swipeLeftApp = "${it.packageName}|${it.activityClassName}|$USER_PERSONAL"
+        }
+        plan.swipeRight?.let {
+            settings.swipeRightApp = "${it.packageName}|${it.activityClassName}|$USER_PERSONAL"
+        }
 
         settings.hiddenApps =
             settings.hiddenApps + plan.hiddenPackages.map { "$it|$USER_PERSONAL" }

@@ -114,11 +114,9 @@
             android:defaultValue="true"
             app:iconSpaceReserved="false" />
 
-        <EditTextPreference
+        <Preference
             android:key="swipe_left_app"
             android:title="Swipe Left App"
-            android:summary="Default: Camera"
-            android:dialogTitle="Package Name"
             app:iconSpaceReserved="false" />
 
         <SwitchPreference
@@ -127,11 +125,9 @@
             android:defaultValue="true"
             app:iconSpaceReserved="false" />
 
-        <EditTextPreference
+        <Preference
             android:key="swipe_right_app"
             android:title="Swipe Right App"
-            android:summary="Default: Phone"
-            android:dialogTitle="Package Name"
             app:iconSpaceReserved="false" />
 
         <ListPreference
