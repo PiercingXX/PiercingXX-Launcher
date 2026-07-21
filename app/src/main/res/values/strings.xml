@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PiercingXX Launcher</string>
+    <string name="app_name_short">PiercingXX</string>
+    <string name="title_settings">Settings</string>
+    
+    <!-- Settings -->
+    <string name="pref_category_home">Home Screen</string>
+    <string name="pref_category_widgets">Widgets</string>
+    <string name="pref_category_drawer">App Drawer</string>
+    <string name="pref_category_gestures">Gestures</string>
+    <string name="pref_category_theme">Theme</string>
+    <string name="pref_category_backup">Backup &amp; Restore</string>
+    
+    <!-- Actions -->
+    <string name="action_app_info">App Info</string>
+    <string name="action_change_label">Change Label</string>
+    <string name="action_hide">Hide</string>
+    <string name="action_show">Show</string>
+    <string name="action_disable_for">Disable for…</string>
+    <string name="action_pin">Pin</string>
+    <string name="action_unpin">Unpin</string>
+    <string name="action_move_up">Move Up</string>
+    <string name="action_move_down">Move Down</string>
+    <string name="action_uninstall">Uninstall</string>
+    <string name="action_rename">Rename</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_create_folder">Create Folder</string>
+    <string name="action_add_to_folder">Add to Folder</string>
+    
+    <!-- Weather -->
+    <string name="weather_permission_rationale">Weather requires location access to show local conditions.</string>
+    <string name="weather_refresh">Refresh</string>
+    <string name="weather_loading">Loading…</string>
+    
+    <!-- Folders -->
+    <string name="folder_member_count">%d apps</string>
+    
+    <!-- Search -->
+    <string name="search_hint">Search apps…</string>
+    <string name="search_no_results">No apps found</string>
+    <string name="search_web_prefix">Web: </string>
+    
+    <!-- Messages -->
+    <string name="toast_already_at_top">Already at top</string>
+    <string name="toast_already_at_bottom">Already at bottom</string>
+    <string name="toast_disabled_until">Disabled until %s</string>
+    <string name="toast_renamed">Renamed</string>
+    <string name="toast_hidden">Hidden</string>
+    <string name="toast_shown">Shown</string>
+    <string name="toast_folder_empty">Folder is empty</string>
+    <string name="toast_invalid_folder_name">Invalid folder name</string>
+    <string name="toast_uninstall_failed">Could not uninstall</string>
+    <string name="toast_backup_created">Backup created</string>
+    <string name="toast_restore_complete">Restore complete</string>
+    <string name="toast_restore_failed">Restore failed</string>
+    
+    <!-- Home / general -->
+    <string name="home_slot_empty">· · ·</string>
+    <string name="long_press_to_select_app">Long-press to choose an app</string>
+    <string name="launcher_settings">Launcher Settings</string>
+    <string name="weather_permission_required">Tap to allow location</string>
+    <string name="weather_unavailable">Weather unavailable</string>
+    <string name="default_launcher_title">Set as default launcher</string>
+    <string name="default_launcher_message">Make this your home screen so gestures and the app drawer are always available.</string>
+    <string name="default_launcher_set">Set default</string>
+    <string name="default_launcher_not_now">Not now</string>
+    <string name="accessibility_service_needed">Enable the launcher accessibility service to lock the screen</string>
+    <string name="notification_access_needed">Grant notification access to mute apps</string>
+    <string name="disable_for_hours">%d hours</string>
+    <string name="action_remove_from_folder">Remove from Folder</string>
+    <string name="confirm_delete_folder">Delete folder \"%s\"?</string>
+    <string name="picker_clear_slot">Clear slot</string>
+    <string name="no_hidden_apps">No hidden apps</string>
+    <string name="pref_hidden_apps">Hidden Apps</string>
+    <string name="pref_custom_color">Custom Background Color</string>
+    <string name="invalid_color">Enter a 6-digit hex color</string>
+    <string name="restore_caveats">Note: app permissions and custom fonts must be set up again</string>
+    <string name="pref_default_launcher">Default Launcher</string>
+    <string name="pref_theme_preset">Theme Preset</string>
+    <string name="pref_widgets">Widgets</string>
+    <string name="widget_tap_action">Tap…</string>
+    <string name="widget_tap_default">Default action</string>
+    <string name="action_delete_shortcut">Delete Shortcut</string>
+    <string name="pin_request_invalid">Invalid pin request</string>
+    <string name="pin_shortcut_success">Shortcut pinned</string>
+    <string name="pin_shortcut_failed">Could not pin shortcut</string>
+    <string name="pin_widgets_unsupported">Widgets are not supported</string>
+    <string name="font_import_success">Imported %s</string>
+    <string name="font_import_failed">Could not import font — use a valid TTF/OTF file</string>
+    <string name="accessibility_service_description">Lets the launcher lock the screen on double-tap and open recents. No data is collected and nothing leaves the device.</string>
+
+    <!-- Accessibility -->
+    <string name="accessibility_home_slot">Home slot %d</string>
+    <string name="accessibility_home_slot_empty">Empty home slot %d, long-press to assign</string>
+    <string name="accessibility_home_slot_filled">%s, home slot %d</string>
+    <string name="accessibility_open_app_drawer">Open app drawer</string>
+    <string name="accessibility_open_settings">Open launcher settings</string>
+    <string name="accessibility_folder_row">Folder %s, %d members</string>
+    <string name="accessibility_pinned">Pinned</string>
+    <string name="accessibility_work_profile">Work profile</string>
+    <string name="accessibility_folder_member_count">%d members</string>
+    <string name="accessibility_new_app">New</string>
+    
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Theme attributes -->
+    <attr name="homeBackgroundColor" format="color" />
+    <attr name="homeTextColor" format="color" />
+    
+    <!-- Preference attributes -->
+    <declare-styleable name="LauncherPreference">
+        <attr name="summary" format="string" />
+    </declare-styleable>
+</resources>

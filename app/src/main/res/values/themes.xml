@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base launcher theme -->
+    <style name="Theme.Launcher" parent="Theme.Material3.DayNight.NoActionBar" tools:targetApi="q">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+        <item name="homeBackgroundColor">@color/default_home_background</item>
+        <item name="homeTextColor">@color/default_home_text</item>
+    </style>
+
+    <!-- Drawer: translucent so the home screen shows through the top strip;
+         no fullscreen flag so adjustResize lifts search above the IME -->
+    <style name="Theme.Launcher.Drawer" parent="Theme.Launcher">
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <!-- Home screen theme - solid color background -->
+    <style name="Theme.Launcher.Home" parent="Theme.Launcher">
+        <item name="android:windowBackground">?attr/homeBackgroundColor</item>
+        <item name="android:navigationBarColor">?attr/homeBackgroundColor</item>
+        <item name="android:statusBarColor">?attr/homeBackgroundColor</item>
+    </style>
+
+    <!-- Settings theme -->
+    <style name="Theme.Launcher.Settings" parent="Theme.Material3.DayNight">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+    </style>
+
+    <!-- Dialog theme -->
+    <style name="Theme.Launcher.Dialog" parent="Theme.Material3.DayNight.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <!-- Text styles -->
+    <style name="TextAppearance.Launcher.HomeSlot" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textColor">?attr/homeTextColor</item>
+    </style>
+
+    <style name="TextAppearance.Launcher.Widget" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textColor">?attr/homeTextColor</item>
+    </style>
+
+    <style name="TextAppearance.Launcher.Widget.Clock" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="android:textColor">?attr/homeTextColor</item>
+    </style>
+
+    <style name="TextAppearance.Launcher.SearchResult" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">?attr/homeTextColor</item>
+    </style>
+
+    <style name="TextAppearance.Launcher.FolderMember" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">?attr/homeTextColor</item>
+        <item name="android:paddingStart">24dp</item>
+    </style>
+
+</resources>

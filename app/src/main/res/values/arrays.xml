@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Slot count entries -->
+    <string-array name="slot_count_entries">
+        <item>None</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+    
+    <string-array name="slot_count_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+    
+    <!-- Alignment entries -->
+    <string-array name="alignment_entries">
+        <item>Left</item>
+        <item>Center</item>
+        <item>Right</item>
+    </string-array>
+    
+    <string-array name="alignment_values">
+        <item>left</item>
+        <item>center</item>
+        <item>right</item>
+    </string-array>
+    
+    <!-- Date/time mode entries -->
+    <string-array name="date_time_mode_entries">
+        <item>Off</item>
+        <item>Date only</item>
+        <item>Date and time</item>
+    </string-array>
+    
+    <string-array name="date_time_mode_values">
+        <item>off</item>
+        <item>date_only</item>
+        <item>date_time</item>
+    </string-array>
+    
+    <!-- Widget entries -->
+    <string-array name="widget_entries">
+        <item>Clock</item>
+        <item>Date</item>
+        <item>Battery</item>
+        <item>Weather</item>
+    </string-array>
+    
+    <string-array name="widget_values">
+        <item>clock</item>
+        <item>date</item>
+        <item>battery</item>
+        <item>weather</item>
+    </string-array>
+    
+    <string-array name="default_widgets">
+        <item>clock</item>
+        <item>date</item>
+        <item>battery</item>
+        <item>weather</item>
+    </string-array>
+    
+    <!-- Temperature unit entries -->
+    <string-array name="temp_unit_entries">
+        <item>Fahrenheit</item>
+        <item>Celsius</item>
+    </string-array>
+    
+    <string-array name="temp_unit_values">
+        <item>fahrenheit</item>
+        <item>celsius</item>
+    </string-array>
+    
+    <!-- Sort mode entries -->
+    <string-array name="sort_mode_entries">
+        <item>Default (pinned first)</item>
+        <item>Alphabetical</item>
+        <item>Alphabetical (no priority)</item>
+        <item>Install date</item>
+        <item>APK size</item>
+    </string-array>
+    
+    <string-array name="sort_mode_values">
+        <item>default</item>
+        <item>alphabetical</item>
+        <item>alphabetical_no_priority</item>
+        <item>install_date</item>
+        <item>apk_size</item>
+    </string-array>
+    
+    <!-- Swipe down action entries -->
+    <string-array name="swipe_down_entries">
+        <item>Expand notifications</item>
+        <item>Web search</item>
+        <item>Disabled</item>
+    </string-array>
+    
+    <string-array name="swipe_down_values">
+        <item>notifications</item>
+        <item>web_search</item>
+        <item>disabled</item>
+    </string-array>
+    
+    <!-- Theme presets -->
+    <string-array name="theme_presets">
+        <item>AMOLED (Pure Black)</item>
+        <item>Graphite</item>
+        <item>Forest</item>
+        <item>Ocean</item>
+        <item>Paper (Light)</item>
+        <item>Mist (Light)</item>
+        <item>Custom</item>
+    </string-array>
+    
+    <string-array name="theme_preset_values">
+        <item>amoled</item>
+        <item>graphite</item>
+        <item>forest</item>
+        <item>ocean</item>
+        <item>paper</item>
+        <item>mist</item>
+        <item>custom</item>
+    </string-array>
+    
+    <!-- Font entries -->
+    <string-array name="font_entries">
+        <item>System</item>
+        <item>Monospace</item>
+        <item>Space Mono</item>
+        <item>JetBrains Mono</item>
+        <item>JetBrains Mono Nerd</item>
+        <item>Custom (imported)</item>
+    </string-array>
+
+    <string-array name="font_values">
+        <item>system</item>
+        <item>monospace</item>
+        <item>space_mono</item>
+        <item>jetbrains_mono</item>
+        <item>jetbrains_mono_nerd</item>
+        <item>custom</item>
+    </string-array>
+
+    <!-- Appearance mode entries -->
+    <string-array name="appearance_mode_entries">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>System</item>
+    </string-array>
+    
+    <string-array name="appearance_mode_values">
+        <item>light</item>
+        <item>dark</item>
+        <item>system</item>
+    </string-array>
+    
+</resources>

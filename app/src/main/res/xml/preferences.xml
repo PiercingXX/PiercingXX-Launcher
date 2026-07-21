@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Home Screen -->
+    <PreferenceCategory
+        android:title="@string/pref_category_home"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="default_launcher"
+            android:title="@string/pref_default_launcher"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:key="slot_count"
+            android:title="Home Slot Count"
+            android:entries="@array/slot_count_entries"
+            android:entryValues="@array/slot_count_values"
+            android:defaultValue="4"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:key="text_alignment"
+            android:title="Text Alignment"
+            android:entries="@array/alignment_entries"
+            android:entryValues="@array/alignment_values"
+            android:defaultValue="center"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:key="date_time_mode"
+            android:title="Date/Time Mode"
+            android:entries="@array/date_time_mode_entries"
+            android:entryValues="@array/date_time_mode_values"
+            android:defaultValue="date_time"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:key="status_bar_visible"
+            android:title="Show Status Bar"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <!-- Widgets -->
+    <PreferenceCategory
+        android:title="@string/pref_category_widgets"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="widgets_config"
+            android:title="Widgets"
+            android:summary="Enable, reorder, and set tap actions"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:key="weather_temp_unit"
+            android:title="Temperature Unit"
+            android:entries="@array/temp_unit_entries"
+            android:entryValues="@array/temp_unit_values"
+            android:defaultValue="fahrenheit"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <!-- App Drawer -->
+    <PreferenceCategory
+        android:title="@string/pref_category_drawer"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreference
+            android:key="auto_show_keyboard"
+            android:title="Auto-show Keyboard"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:key="sort_mode"
+            android:title="Sort Mode"
+            android:entries="@array/sort_mode_entries"
+            android:entryValues="@array/sort_mode_values"
+            android:defaultValue="default"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:key="hide_home_apps_from_drawer"
+            android:title="Hide Home Apps from Drawer"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:key="hide_folder_members"
+            android:title="Hide Folder Members"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="hidden_apps"
+            android:title="Hidden Apps"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <!-- Gestures -->
+    <PreferenceCategory
+        android:title="@string/pref_category_gestures"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreference
+            android:key="swipe_left_enabled"
+            android:title="Enable Swipe Left"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false" />
+
+        <EditTextPreference
+            android:key="swipe_left_app"
+            android:title="Swipe Left App"
+            android:summary="Default: Camera"
+            android:dialogTitle="Package Name"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:key="swipe_right_enabled"
+            android:title="Enable Swipe Right"
+            android:defaultValue="true"
+            app:iconSpaceReserved="false" />
+
+        <EditTextPreference
+            android:key="swipe_right_app"
+            android:title="Swipe Right App"
+            android:summary="Default: Phone"
+            android:dialogTitle="Package Name"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:key="swipe_down_action"
+            android:title="Swipe Down Action"
+            android:entries="@array/swipe_down_entries"
+            android:entryValues="@array/swipe_down_values"
+            android:defaultValue="notifications"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:key="double_tap_lock"
+            android:title="Double Tap to Lock"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:key="home_to_recents"
+            android:title="Home Button Opens Recents"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <!-- Theme -->
+    <PreferenceCategory
+        android:title="@string/pref_category_theme"
+        app:iconSpaceReserved="false">
+
+        <com.launcher.settings.ThemePreviewPreference
+            android:key="theme_strip"
+            android:title="Theme Preset"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="custom_color"
+            android:title="Custom Background Color"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:key="appearance_mode"
+            android:title="Appearance Mode"
+            android:entries="@array/appearance_mode_entries"
+            android:entryValues="@array/appearance_mode_values"
+            android:defaultValue="dark"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:key="font_family"
+            android:title="Font Family"
+            android:entries="@array/font_entries"
+            android:entryValues="@array/font_values"
+            android:defaultValue="jetbrains_mono_nerd"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="import_font"
+            android:title="Import Font File"
+            android:summary="TTF or OTF"
+            app:iconSpaceReserved="false" />
+
+        <SeekBarPreference
+            android:key="text_size_scale"
+            android:title="Text Size Scale"
+            android:min="50"
+            android:max="200"
+            android:defaultValue="100"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <!-- Backup -->
+    <PreferenceCategory
+        android:title="@string/pref_category_backup"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="export_backup"
+            android:title="Export Backup"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="import_backup"
+            android:title="Import Backup"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <!-- About -->
+    <PreferenceCategory
+        android:title="About"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="version"
+            android:title="Version"
+            android:summary="1.0"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

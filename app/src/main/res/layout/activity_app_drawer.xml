@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawerRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Top ~15% stays open so the drawer reads as a sheet; tap closes. -->
+    <View
+        android:id="@+id/topSpacer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.15" />
+
+    <LinearLayout
+        android:id="@+id/drawerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.85"
+        android:orientation="vertical">
+
+        <!-- fillViewport + bottom gravity: short result lists anchor just above
+             the search field; long lists scroll normally. -->
+        <ScrollView
+            android:id="@+id/appScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:id="@+id/appListContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="bottom"
+                android:padding="8dp" />
+
+        </ScrollView>
+
+        <!-- Search field pinned at the bottom -->
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_hint"
+            android:inputType="text"
+            android:maxLines="1"
+            android:imeOptions="actionSearch"
+            android:importantForAutofill="no"
+            android:background="@null"
+            android:padding="16dp"
+            android:textAppearance="@style/TextAppearance.Launcher.SearchResult" />
+
+    </LinearLayout>
+
+</LinearLayout>

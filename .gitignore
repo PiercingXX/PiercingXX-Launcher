@@ -1,0 +1,22 @@
+# Built files
+/build/
+/app/build/
+.gradle/
+
+# Local configuration
+local.properties
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Keystore (the shared debug keystore is committed deliberately)
+*.keystore
+*.jks
+!app/debug.keystore
+
+# Android Studio
+*.log
+*.cache
