@@ -368,7 +368,9 @@ class AppDrawerActivity : AppCompatActivity() {
             "right" -> Gravity.END
             else -> Gravity.CENTER_HORIZONTAL
         }
-        setPadding(dp(if (indent) 40 else 24), dp(10), dp(24), dp(10))
+        // Symmetric horizontal padding keeps centered/right alignment true;
+        // indented rows shrink inward from both edges.
+        dp(if (indent) 40 else 24).let { setPadding(it, dp(10), it, dp(10)) }
         isClickable = true
         isLongClickable = true
         setOnClickListener { onTap() }

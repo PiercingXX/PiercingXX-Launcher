@@ -147,6 +147,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Clear any lingering swipe-direction override so slot and drawer
+        // launches keep the default open animation.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, 0, 0)
+        }
         applyTheme()
         collapseFolder()
         widgetContainer.rebuild()
@@ -301,7 +306,9 @@ class MainActivity : AppCompatActivity() {
                     text = member.label
                     setTextColor(colors.textColor)
                     setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f * scale)
-                    setPadding(dp(24), dp(6), dp(8), dp(6))
+                    // Symmetric padding so centered rows stay centered; the
+                    // smaller text size sets members apart from slots.
+                    setPadding(dp(24), dp(6), dp(24), dp(6))
                     isClickable = true
                     isLongClickable = true
                     setOnClickListener {
@@ -433,33 +440,42 @@ class MainActivity : AppCompatActivity() {
     private fun handleSwipeLeft() {
         if (!settings.swipeLeftEnabled) return
         // Swiping left pulls the app in from the right edge.
-        if (!launchSwipeApp(settings.swipeLeftApp, R.anim.slide_in_right)) {
-            openCameraApp(this)
-            if (!isEinkDisplay()) overridePendingTransition(R.anim.slide_in_right, 0)
-        }
+        if (!launchSwipeApp(settings.swipeLeftApp)) openCameraApp(this)
+        applySwipeTransition(R.anim.slide_in_right)
     }
 
     private fun handleSwipeRight() {
         if (!settings.swipeRightEnabled) return
         // Swiping right pulls the app in from the left edge.
-        if (!launchSwipeApp(settings.swipeRightApp, R.anim.slide_in_left)) {
-            openDialerApp(this)
-            if (!isEinkDisplay()) overridePendingTransition(R.anim.slide_in_left, 0)
+        if (!launchSwipeApp(settings.swipeRightApp)) openDialerApp(this)
+        applySwipeTransition(R.anim.slide_in_left)
+    }
+
+    /**
+     * Directional open transition for the launch we just kicked off.
+     * ActivityOptions animations are ignored for cross-task launches on
+     * modern Android, so override on the activity instead; the API 34+
+     * override is persistent and gets reset in onResume.
+     */
+    private fun applySwipeTransition(enterAnim: Int) {
+        if (isEinkDisplay()) return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, enterAnim, 0)
+        } else {
+            @Suppress("DEPRECATION")
+            overridePendingTransition(enterAnim, 0)
         }
     }
 
     /** Value is "pkg|activity|user|shortcutId"; trailing parts are optional. */
-    private fun launchSwipeApp(value: String?, enterAnim: Int): Boolean {
+    private fun launchSwipeApp(value: String?): Boolean {
         if (value.isNullOrBlank()) return false
         val parts = value.split("|")
-        val opts = if (isEinkDisplay()) null
-        else android.app.ActivityOptions.makeCustomAnimation(this, enterAnim, 0).toBundle()
         return appRepo.launch(
             parts[0],
             parts.getOrNull(1)?.ifBlank { null },
             parts.getOrNull(2)?.ifBlank { null } ?: USER_PERSONAL,
             parts.getOrNull(3)?.ifBlank { null },
-            opts,
         )
     }
 
