@@ -56,6 +56,15 @@ class LauncherSmokeTest {
     }
 
     @Test
+    fun appPickerLaunches() {
+        ActivityScenario.launch(AppPickerActivity::class.java).use { scenario ->
+            scenario.onActivity { activity ->
+                assertFalse(activity.isFinishing)
+            }
+        }
+    }
+
+    @Test
     fun settingsActivityShowsPreferences() {
         ActivityScenario.launch(SettingsActivity::class.java).use { scenario ->
             scenario.onActivity { activity ->
@@ -73,7 +82,7 @@ class LauncherSmokeTest {
                 1,
                 SlotEntry(label = "Test", packageName = "com.example.test", userToken = "personal"),
             )
-            // A fresh repository over the same prefs file sees the write (§12.3).
+            // A fresh repository over the same prefs file sees the write.
             val reloaded = SettingsRepository(app).getSlot(1)
             assertEquals("Test", reloaded.label)
             assertEquals("com.example.test", reloaded.packageName)

@@ -30,12 +30,17 @@
     <!-- Settings theme -->
     <style name="Theme.Launcher.Settings" parent="Theme.Material3.DayNight">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="homeBackgroundColor">@color/default_home_background</item>
+        <item name="homeTextColor">@color/default_home_text</item>
     </style>
 
-    <!-- Dialog theme -->
+    <!-- Dialog theme. Defines the launcher color attrs so launcher text
+         appearances resolve here too. -->
     <style name="Theme.Launcher.Dialog" parent="Theme.Material3.DayNight.Dialog">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="homeBackgroundColor">@color/default_home_background</item>
+        <item name="homeTextColor">@color/default_home_text</item>
     </style>
 
     <!-- Text styles -->
