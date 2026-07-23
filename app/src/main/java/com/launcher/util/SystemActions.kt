@@ -93,6 +93,39 @@ fun openCalendarApp(context: Context) {
     }
 }
 
+// Android has no standard "open the weather app" intent, so probe the common
+// stock and third-party weather packages before falling back to a web search.
+private val WEATHER_PACKAGES = listOf(
+    "com.google.android.apps.weather",
+    "com.sec.android.daemonapp",
+    "com.samsung.android.weather",
+    "com.miui.weather2",
+    "com.oneplus.weather",
+    "com.coloros.weather2",
+    "com.oppo.weather",
+    "com.huawei.android.totemweather",
+    "org.breezyweather",
+    "org.breezyweather.debug",
+    "wangdaye.com.geometricweather",
+    "com.weather.Weather",
+    "com.accuweather.android",
+    "com.yahoo.mobile.client.android.weather",
+    "com.devexpert.weather",
+)
+
+fun openWeatherApp(context: Context) {
+    for (pkg in WEATHER_PACKAGES) {
+        val intent = context.packageManager.getLaunchIntentForPackage(pkg) ?: continue
+        try {
+            context.startActivity(intent)
+            return
+        } catch (e: Exception) {
+            Log.w(TAG, "Unable to open weather app $pkg", e)
+        }
+    }
+    context.openWebSearch("weather")
+}
+
 fun Context.openWebSearch(query: String? = null) {
     try {
         val intent = Intent(Intent.ACTION_WEB_SEARCH)

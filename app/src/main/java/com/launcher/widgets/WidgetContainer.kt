@@ -16,6 +16,7 @@ import com.launcher.theme.ThemeManager
 import com.launcher.theme.applyLauncherFont
 import com.launcher.util.openAlarmApp
 import com.launcher.util.openCalendarApp
+import com.launcher.util.openWeatherApp
 import com.launcher.weather.WeatherResult
 import com.launcher.weather.fetchWeatherSummary
 import com.launcher.weather.hasWeatherLocationPermission
@@ -116,7 +117,12 @@ class WidgetContainer @JvmOverloads constructor(
                             runTapOverride("weather") -> Unit
                             !context.hasWeatherLocationPermission() ->
                                 onWeatherPermissionNeeded?.invoke()
-                            else -> refreshWeather(force = true)
+                            else -> {
+                                // Refresh quietly behind the scenes; the tap itself
+                                // belongs to the weather app.
+                                refreshWeather(force = true)
+                                openWeatherApp(context)
+                            }
                         }
                     }
                     refreshWeather()
@@ -176,11 +182,13 @@ class WidgetContainer @JvmOverloads constructor(
         return if (battery in 1..100) "$battery%" else ""
     }
 
+    // A cached reading always wins over "Loading…" so refreshes stay invisible;
+    // the loading text only appears when there is nothing to show yet.
     private fun weatherText(): String = when {
-        weatherLoading -> context.getString(R.string.weather_loading)
         !context.hasWeatherLocationPermission() ->
             context.getString(R.string.weather_permission_required)
         settings.weatherCachedSummary.isNotBlank() -> settings.weatherCachedSummary
+        weatherLoading -> context.getString(R.string.weather_loading)
         else -> context.getString(R.string.weather_unavailable)
     }
 
