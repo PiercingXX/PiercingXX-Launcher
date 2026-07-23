@@ -46,6 +46,22 @@ Requires JDK 17 and the Android SDK (API 34).
 
 The APK lands in `app/build/outputs/apk/debug/`.
 
+Unit tests run anywhere:
+
+```sh
+./gradlew testDebugUnitTest
+```
+
+The instrumented tests in `app/src/androidTest/` run against a real
+device — and Gradle **uninstalls the app when they finish**, wiping its
+folders and settings. Never point them at a phone you actually use
+unless you pass:
+
+```sh
+./gradlew connectedDebugAndroidTest \
+  -Pandroid.injected.androidTest.leaveApksInstalledAfterRun=true
+```
+
 ## Installing
 
 ```sh
