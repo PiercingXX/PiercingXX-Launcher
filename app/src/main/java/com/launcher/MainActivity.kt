@@ -317,7 +317,10 @@ class MainActivity : AppCompatActivity() {
                     }
                     setOnLongClickListener {
                         itemMenu.showAppMenu(member, folderId = folderId) {
+                            // renderHomeSlots collapses; drop the folder back
+                            // open so a reorder is visible straight away.
                             renderHomeSlots()
+                            toggleFolder(slot, folderId)
                         }
                         true
                     }

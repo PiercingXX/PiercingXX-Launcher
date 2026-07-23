@@ -22,7 +22,8 @@ drawer, and a clean AMOLED-black home screen.
 - **Fast app drawer** — bottom-anchored search, swipe up to open,
   `!query` jumps straight to DuckDuckGo, Enter launches the top hit
 - **Folders** — group apps into named folders that live in home slots
-  and drop open inline
+  and drop open inline, with the contents in whatever order you arrange
+  them
 - **Gestures** — swipe left/right to launch apps, swipe down for
   notifications or web search, double-tap to lock
 - **Theming** — six built-in presets plus custom background color,

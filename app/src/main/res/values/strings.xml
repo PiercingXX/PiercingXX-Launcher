@@ -27,6 +27,9 @@
     <string name="action_delete">Delete</string>
     <string name="action_create_folder">Create Folder</string>
     <string name="action_add_to_folder">Add to Folder</string>
+    <string name="action_rearrange">Rearrange Apps</string>
+    <string name="action_sort_alphabetically">Sort A–Z</string>
+    <string name="action_done">Done</string>
     
     <!-- Weather -->
     <string name="weather_permission_rationale">Weather requires location access to show local conditions.</string>
@@ -35,6 +38,9 @@
     
     <!-- Folders -->
     <string name="folder_member_count">%d apps</string>
+    <string name="rearrange_title">Rearrange %s</string>
+    <string name="rearrange_up">▲</string>
+    <string name="rearrange_down">▼</string>
     
     <!-- Search -->
     <string name="search_hint">Search apps…</string>
@@ -49,6 +55,7 @@
     <string name="toast_hidden">Hidden</string>
     <string name="toast_shown">Shown</string>
     <string name="toast_folder_empty">Folder is empty</string>
+    <string name="toast_nothing_to_rearrange">Needs at least two apps to rearrange</string>
     <string name="toast_invalid_folder_name">Invalid folder name</string>
     <string name="toast_uninstall_failed">Could not uninstall</string>
     <string name="toast_backup_created">Backup created</string>
@@ -101,5 +108,7 @@
     <string name="accessibility_work_profile">Work profile</string>
     <string name="accessibility_folder_member_count">%d members</string>
     <string name="accessibility_new_app">New</string>
+    <string name="accessibility_move_up">Move %s up</string>
+    <string name="accessibility_move_down">Move %s down</string>
     
 </resources>

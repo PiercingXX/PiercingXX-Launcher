@@ -5,9 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.provider.Settings
 import android.text.format.DateFormat
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.launcher.R
 import com.launcher.data.AppInfo
@@ -16,6 +21,7 @@ import com.launcher.data.SettingsRepository
 import com.launcher.folder.FolderManager
 import com.launcher.notification.AppMuteListenerService
 import com.launcher.theme.ThemeManager
+import com.launcher.theme.applyLauncherFont
 import com.launcher.theme.applyLauncherTheme
 import com.launcher.util.openAppInfo
 import com.launcher.util.requestUninstall
@@ -104,6 +110,27 @@ class ItemActionMenu(
         }
 
         if (folderId >= 0 && folders != null) {
+            items.add(context.getString(R.string.action_move_up) to {
+                scope.launch {
+                    folders.moveMember(folderId, app.key, up = true).onFailure {
+                        context.showToast(context.getString(R.string.toast_already_at_top))
+                    }
+                    onChanged()
+                }
+            })
+            items.add(context.getString(R.string.action_move_down) to {
+                scope.launch {
+                    folders.moveMember(folderId, app.key, up = false).onFailure {
+                        context.showToast(context.getString(R.string.toast_already_at_bottom))
+                    }
+                    onChanged()
+                }
+            })
+            // Home-screen folders have no folder-level menu, so the full
+            // rearrange sheet hangs off the member rows too.
+            items.add(context.getString(R.string.action_rearrange) to {
+                showRearrangeDialog(folderId, folderName = null, onChanged = onChanged)
+            })
             items.add(context.getString(R.string.action_remove_from_folder) to {
                 scope.launch {
                     folders.removeMember(folderId, app)
@@ -147,6 +174,9 @@ class ItemActionMenu(
                     }
                 }
             },
+            context.getString(R.string.action_rearrange) to {
+                showRearrangeDialog(folderId, folderName, onChanged)
+            },
             context.getString(R.string.action_move_up) to {
                 scope.launch { folders.moveFolder(folderId, up = true); onChanged() }
             },
@@ -181,6 +211,136 @@ class ItemActionMenu(
                     },
                 )
             }
+        }
+    }
+
+    /**
+     * Manual folder ordering. Rows rebuild in place after every move so the
+     * sheet stays open for a run of adjustments; each move is already
+     * persisted, so [onChanged] fires once on dismiss.
+     */
+    private fun showRearrangeDialog(folderId: Int, folderName: String?, onChanged: () -> Unit) {
+        val folders = folders ?: return
+        scope.launch {
+            val name = folderName ?: folders.getFolder(folderId)?.name ?: return@launch
+            val members = folders.getMembers(folderId).toMutableList()
+            if (members.size < 2) {
+                context.showToast(context.getString(R.string.toast_nothing_to_rearrange))
+                return@launch
+            }
+
+            val colors = themeManager.getCurrentColors()
+            val fontKey = settings.fontFamily
+            val scale = settings.textSizeScale
+            fun dp(value: Int): Int =
+                (value * context.resources.displayMetrics.density).toInt()
+
+            val list = LinearLayout(context).apply {
+                orientation = LinearLayout.VERTICAL
+                setPadding(dp(20), dp(4), dp(20), dp(4))
+            }
+
+            fun arrow(
+                glyph: Int,
+                enabled: Boolean,
+                description: String,
+                onTap: () -> Unit,
+            ): TextView = TextView(context).apply {
+                text = context.getString(glyph)
+                setTextColor(colors.textColor)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f * scale)
+                setPadding(dp(14), dp(10), dp(14), dp(10))
+                // Dimmed rather than hidden so rows keep a stable width.
+                alpha = if (enabled) 1f else 0.25f
+                contentDescription = description
+                applyLauncherFont(fontKey)
+                if (enabled) {
+                    isClickable = true
+                    setOnClickListener { onTap() }
+                }
+            }
+
+            fun render() {
+                list.removeAllViews()
+                members.forEachIndexed { index, member ->
+                    fun move(up: Boolean) {
+                        scope.launch {
+                            folders.moveMember(folderId, member.key, up)
+                            members.clear()
+                            members.addAll(folders.getMembers(folderId))
+                            render()
+                        }
+                    }
+
+                    val row = LinearLayout(context).apply {
+                        orientation = LinearLayout.HORIZONTAL
+                        gravity = Gravity.CENTER_VERTICAL
+                    }
+                    val label = TextView(context).apply {
+                        text = member.label
+                        setTextColor(colors.textColor)
+                        setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f * scale)
+                        setPadding(0, dp(6), dp(8), dp(6))
+                        applyLauncherFont(fontKey)
+                    }
+                    row.addView(
+                        label,
+                        LinearLayout.LayoutParams(
+                            0,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            1f,
+                        )
+                    )
+                    row.addView(
+                        arrow(
+                            R.string.rearrange_up,
+                            enabled = index > 0,
+                            description = context.getString(
+                                R.string.accessibility_move_up, member.label
+                            ),
+                        ) { move(up = true) }
+                    )
+                    row.addView(
+                        arrow(
+                            R.string.rearrange_down,
+                            enabled = index < members.size - 1,
+                            description = context.getString(
+                                R.string.accessibility_move_down, member.label
+                            ),
+                        ) { move(up = false) }
+                    )
+                    list.addView(
+                        row,
+                        LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                        )
+                    )
+                }
+            }
+
+            render()
+
+            val dialog = AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.rearrange_title, name))
+                .setView(ScrollView(context).apply { addView(list) })
+                .setNeutralButton(R.string.action_sort_alphabetically, null)
+                .setPositiveButton(R.string.action_done, null)
+                .setOnDismissListener { onChanged() }
+                .create()
+
+            dialog.show()
+            dialog.applyLauncherTheme(themeManager, fontKey)
+            // Sorting re-renders in place; only Done closes the sheet.
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
+                scope.launch {
+                    folders.sortMembersAlphabetically(folderId)
+                    members.clear()
+                    members.addAll(folders.getMembers(folderId))
+                    render()
+                }
+            }
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener { dialog.dismiss() }
         }
     }
 

@@ -43,12 +43,15 @@ class FolderManager(
         folderDao.getFolder(folderId).firstOrNull()
     }
 
-    /** Resolves member rows to launchable apps; prunes entries that no longer resolve. */
+    /**
+     * Resolves member rows to launchable apps in the user's manual order;
+     * prunes entries that no longer resolve.
+     */
     suspend fun getMembers(folderId: Int): List<AppInfo> = withContext(Dispatchers.IO) {
         val launcherApps =
             context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
         val rows = folderDao.getFolderMembers(folderId)
-        val resolved = mutableListOf<AppInfo>()
+        val resolved = mutableListOf<Pair<FolderMember, AppInfo>>()
         val stale = mutableListOf<FolderMember>()
 
         rows.forEach { row ->
@@ -65,7 +68,7 @@ class FolderManager(
             val original = activity.label.toString()
             val rename = settings.getRenameLabel(row.appId)
             resolved.add(
-                AppInfo(
+                row to AppInfo(
                     packageName = packageName,
                     activityClassName = activity.componentName.className,
                     label = rename.ifBlank { original },
@@ -79,7 +82,20 @@ class FolderManager(
         }
 
         stale.forEach { folderDao.deleteMember(it) }
-        resolved.sortedBy { it.label.lowercase() }
+
+        // Ties break alphabetically, so folders written before manual ordering
+        // existed (every row at 0) keep the order they used to display in.
+        // Renumbering to 0..n-1 also closes gaps left by removed members.
+        val ordered = resolved.sortedWith(
+            compareBy<Pair<FolderMember, AppInfo>>({ it.first.sortOrder })
+                .thenBy { it.second.label.lowercase() }
+        )
+        val renumbered = ordered.mapIndexedNotNull { index, (row, _) ->
+            row.takeIf { it.sortOrder != index }?.copy(sortOrder = index)
+        }
+        if (renumbered.isNotEmpty()) folderDao.updateMembers(renumbered)
+
+        ordered.map { it.second }
     }
 
     suspend fun createFolder(name: String): Result<Folder> = withContext(Dispatchers.IO) {
@@ -124,7 +140,14 @@ class FolderManager(
         if (existing.any { it.appId == app.key }) {
             return@withContext Result.failure(IllegalArgumentException("App already in folder"))
         }
-        folderDao.insertMember(FolderMember(folderId = folderId, appId = app.key))
+        // New members land at the bottom so they never disturb a manual order.
+        folderDao.insertMember(
+            FolderMember(
+                folderId = folderId,
+                appId = app.key,
+                sortOrder = (folderDao.maxMemberSortOrder(folderId) ?: -1) + 1,
+            )
+        )
         Result.success(Unit)
     }
 
@@ -138,22 +161,59 @@ class FolderManager(
             Result.success(Unit)
         }
 
+    /** Swaps a member with its neighbour. Fails at the ends of the list. */
+    suspend fun moveMember(folderId: Int, appKey: String, up: Boolean): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            val moved = moveInList(getMembers(folderId).map { it.key }, appKey, up)
+                ?: return@withContext Result.failure(IllegalStateException("Cannot move"))
+            persistMemberOrder(folderId, moved)
+            Result.success(Unit)
+        }
+
+    /** Resets a folder to alphabetical order by displayed label. */
+    suspend fun sortMembersAlphabetically(folderId: Int): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            val ordered = getMembers(folderId)
+                .sortedBy { it.label.lowercase() }
+                .map { it.key }
+            persistMemberOrder(folderId, ordered)
+            Result.success(Unit)
+        }
+
+    private suspend fun persistMemberOrder(folderId: Int, orderedKeys: List<String>) {
+        val rows = folderDao.getFolderMembers(folderId).associateBy { it.appId }
+        val updates = orderedKeys.mapIndexedNotNull { index, key ->
+            rows[key]?.takeIf { it.sortOrder != index }?.copy(sortOrder = index)
+        }
+        if (updates.isNotEmpty()) folderDao.updateMembers(updates)
+    }
+
     /** All member keys ("package|userToken") across every folder. */
     suspend fun getAllMemberKeys(): Set<String> = withContext(Dispatchers.IO) {
         db.folderDao().getAllMembers().mapTo(mutableSetOf()) { it.appId }
     }
 
     suspend fun moveFolder(folderId: Int, up: Boolean): Result<Unit> = withContext(Dispatchers.IO) {
-        val folders = (folderDao.getAllFolders().firstOrNull() ?: emptyList()).toMutableList()
-        val index = folders.indexOfFirst { it.id == folderId }
-        val target = if (up) index - 1 else index + 1
-        if (index < 0 || target < 0 || target >= folders.size) {
-            return@withContext Result.failure(IllegalStateException("Cannot move"))
-        }
-        val tmp = folders[index]
-        folders[index] = folders[target]
-        folders[target] = tmp
-        folders.forEachIndexed { i, folder -> folderDao.update(folder.copy(sortOrder = i)) }
+        val folders = folderDao.getAllFolders().firstOrNull() ?: emptyList()
+        val current = folders.firstOrNull { it.id == folderId }
+            ?: return@withContext Result.failure(IllegalStateException("Cannot move"))
+        val moved = moveInList(folders, current, up)
+            ?: return@withContext Result.failure(IllegalStateException("Cannot move"))
+        moved.forEachIndexed { i, folder -> folderDao.update(folder.copy(sortOrder = i)) }
         Result.success(Unit)
+    }
+}
+
+/**
+ * Swaps [item] with the neighbour above or below it, returning the new order —
+ * or null when [item] is missing or already at that end of the list.
+ */
+internal fun <T> moveInList(items: List<T>, item: T, up: Boolean): List<T>? {
+    val index = items.indexOf(item)
+    val target = if (up) index - 1 else index + 1
+    if (index < 0 || target < 0 || target >= items.size) return null
+    return items.toMutableList().apply {
+        this[index] = this[target]
+        this[target] = item
     }
 }

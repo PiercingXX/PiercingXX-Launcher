@@ -2,6 +2,8 @@ package com.launcher.data
 
 import android.content.Context
 import androidx.room.*
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.flow.Flow
 
 @Entity(tableName = "home_slots")
@@ -24,7 +26,9 @@ data class Folder(
 @Entity(tableName = "folder_members", primaryKeys = ["folderId", "appId"])
 data class FolderMember(
     val folderId: Int,
-    val appId: String
+    val appId: String,
+    /** Manual position inside the folder; normalized to 0..n-1 on read. */
+    val sortOrder: Int = 0
 )
 
 @Dao
@@ -75,25 +79,31 @@ interface FolderDao {
     suspend fun countByName(name: String): Int
 
     // Folder member operations
-    @Query("SELECT * FROM folder_members WHERE folderId = :folderId")
+    @Query("SELECT * FROM folder_members WHERE folderId = :folderId ORDER BY sortOrder ASC, appId ASC")
     suspend fun getFolderMembers(folderId: Int): List<FolderMember>
 
     @Query("SELECT * FROM folder_members")
     suspend fun getAllMembers(): List<FolderMember>
-    
+
+    @Query("SELECT MAX(sortOrder) FROM folder_members WHERE folderId = :folderId")
+    suspend fun maxMemberSortOrder(folderId: Int): Int?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMember(member: FolderMember)
-    
+
+    @Update
+    suspend fun updateMembers(members: List<FolderMember>)
+
     @Delete
     suspend fun deleteMember(member: FolderMember)
-    
+
     @Query("DELETE FROM folder_members WHERE folderId = :folderId AND appId = :appId")
     suspend fun removeMember(folderId: Int, appId: String)
 }
 
 @Database(
     entities = [HomeSlot::class, Folder::class, FolderMember::class],
-    version = 1,
+    version = 2,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -104,13 +114,26 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
+        /**
+         * Manual folder ordering. Existing rows all land on 0; FolderManager
+         * renumbers them alphabetically on the next read, so folders keep the
+         * order they had before the upgrade.
+         */
+        private val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "ALTER TABLE folder_members ADD COLUMN sortOrder INTEGER NOT NULL DEFAULT 0"
+                )
+            }
+        }
+
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
                     "launcher.db"
-                ).build()
+                ).addMigrations(MIGRATION_1_2).build()
                 INSTANCE = instance
                 instance
             }
