@@ -12,8 +12,8 @@ android {
         applicationId "com.launcher"
         minSdk 24
         targetSdk 34
-        versionCode 61
-        versionName "0.61"
+        versionCode 70
+        versionName "0.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

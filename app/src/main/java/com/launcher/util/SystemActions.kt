@@ -55,17 +55,17 @@ fun expandNotificationDrawer(context: Context) {
     }
 }
 
-fun openDialerApp(context: Context) {
+fun openDialerApp(context: Context, options: android.os.Bundle? = null) {
     try {
-        context.startActivity(Intent(Intent.ACTION_DIAL))
+        context.startActivity(Intent(Intent.ACTION_DIAL), options)
     } catch (e: Exception) {
         Log.w(TAG, "Unable to open dialer", e)
     }
 }
 
-fun openCameraApp(context: Context) {
+fun openCameraApp(context: Context, options: android.os.Bundle? = null) {
     try {
-        context.startActivity(Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA))
+        context.startActivity(Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA), options)
     } catch (e: Exception) {
         Log.w(TAG, "Unable to open camera", e)
     }
@@ -243,9 +243,17 @@ fun Activity.hideStatusBar() {
     }
 }
 
-// The nav bar / gesture pill stays hidden while the launcher is foreground;
-// an edge swipe still reveals it transiently.
+// 0 = 3-button, 1 = 2-button, 2 = full gesture navigation.
+fun Context.isGestureNavigation(): Boolean =
+    android.provider.Settings.Secure.getInt(contentResolver, "navigation_mode", 0) == 2
+
+// The nav bar stays hidden while the launcher is foreground; an edge swipe
+// still reveals it transiently. Under gesture navigation the pill is left
+// alone — hiding it turns the system's swipe-up (home/recents) into a
+// reveal-bars swipe, so the bottom edge keeps belonging to Android while
+// swipes elsewhere on the home screen open the app drawer.
 fun Activity.hideNavigationBar() {
+    if (isGestureNavigation()) return
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         window.insetsController?.apply {
             systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE

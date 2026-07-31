@@ -23,8 +23,6 @@ data class BackupData(
     val weatherTempUnit: String = "fahrenheit",
     val autoShowKeyboard: Boolean = false,
     val sortMode: String = "default",
-    val hideHomeAppsFromDrawer: Boolean = false,
-    val hideFolderMembers: Boolean = false,
     val swipeLeftApp: String? = null,
     val swipeRightApp: String? = null,
     val swipeLeftEnabled: Boolean = true,
@@ -109,8 +107,6 @@ class BackupManager(
                 weatherTempUnit = settings.weatherTempUnit,
                 autoShowKeyboard = settings.autoShowKeyboard,
                 sortMode = settings.sortMode,
-                hideHomeAppsFromDrawer = settings.hideHomeAppsFromDrawer,
-                hideFolderMembers = settings.hideFolderMembers,
                 swipeLeftApp = settings.swipeLeftApp,
                 swipeRightApp = settings.swipeRightApp,
                 swipeLeftEnabled = settings.swipeLeftEnabled,
@@ -164,8 +160,6 @@ class BackupManager(
         settings.weatherTempUnit = data.weatherTempUnit
         settings.autoShowKeyboard = data.autoShowKeyboard
         settings.sortMode = data.sortMode
-        settings.hideHomeAppsFromDrawer = data.hideHomeAppsFromDrawer
-        settings.hideFolderMembers = data.hideFolderMembers
         settings.swipeLeftApp = data.swipeLeftApp
         settings.swipeRightApp = data.swipeRightApp
         settings.swipeLeftEnabled = data.swipeLeftEnabled

@@ -201,16 +201,12 @@ class AppDrawerActivity : AppCompatActivity() {
             // Hidden apps match search but never browse.
             apps.filter { it.matches(query) }
         } else {
-            var list = hiddenExcluded
-            if (settings.hideHomeAppsFromDrawer) {
-                val slotKeys = homeSlotKeys()
-                list = list.filter { appRepo.isPinned(it) || it.key !in slotKeys }
+            // Home-slot apps and folder members never browse (search still finds
+            // them); explicitly pinned apps stay regardless.
+            val slotKeys = homeSlotKeys()
+            hiddenExcluded.filter {
+                appRepo.isPinned(it) || (it.key !in slotKeys && it.key !in folderMemberKeys)
             }
-            // Folder members optionally leave the browsable list (search still finds them).
-            if (settings.hideFolderMembers) {
-                list = list.filter { appRepo.isPinned(it) || it.key !in folderMemberKeys }
-            }
-            list
         }
 
         val sorted = sortApps(browseList, pinnedOrder)

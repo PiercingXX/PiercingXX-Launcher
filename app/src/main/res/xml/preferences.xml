@@ -84,18 +84,6 @@
             android:defaultValue="default"
             app:iconSpaceReserved="false" />
 
-        <SwitchPreference
-            android:key="hide_home_apps_from_drawer"
-            android:title="Hide Home Apps from Drawer"
-            android:defaultValue="false"
-            app:iconSpaceReserved="false" />
-
-        <SwitchPreference
-            android:key="hide_folder_members"
-            android:title="Hide Folder Members"
-            android:defaultValue="false"
-            app:iconSpaceReserved="false" />
-
         <Preference
             android:key="hidden_apps"
             android:title="Hidden Apps"

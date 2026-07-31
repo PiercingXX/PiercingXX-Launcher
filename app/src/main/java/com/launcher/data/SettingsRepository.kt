@@ -35,8 +35,6 @@ class SettingsRepository(context: Context) {
 
         const val KEY_AUTO_SHOW_KEYBOARD = "auto_show_keyboard"
         const val KEY_SORT_MODE = "sort_mode"
-        const val KEY_HIDE_HOME_APPS_FROM_DRAWER = "hide_home_apps_from_drawer"
-        const val KEY_HIDE_FOLDER_MEMBERS = "hide_folder_members"
 
         const val KEY_SWIPE_LEFT_APP = "swipe_left_app"
         const val KEY_SWIPE_RIGHT_APP = "swipe_right_app"
@@ -140,14 +138,6 @@ class SettingsRepository(context: Context) {
     var sortMode: String
         get() = prefs.getString(KEY_SORT_MODE, "default") ?: "default"
         set(value) = prefs.edit { putString(KEY_SORT_MODE, value) }
-
-    var hideHomeAppsFromDrawer: Boolean
-        get() = prefs.getBoolean(KEY_HIDE_HOME_APPS_FROM_DRAWER, false)
-        set(value) = prefs.edit { putBoolean(KEY_HIDE_HOME_APPS_FROM_DRAWER, value) }
-
-    var hideFolderMembers: Boolean
-        get() = prefs.getBoolean(KEY_HIDE_FOLDER_MEMBERS, false)
-        set(value) = prefs.edit { putBoolean(KEY_HIDE_FOLDER_MEMBERS, value) }
 
     // Gestures
     var swipeLeftApp: String?

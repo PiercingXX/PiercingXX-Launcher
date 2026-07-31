@@ -15,6 +15,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -119,6 +120,10 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+        // Home is the bottom of the stack: claim back so edge swipes don't
+        // play the system's predictive-back animation on the launcher.
+        onBackPressedDispatcher.addCallback(this) { collapseFolder() }
+
         widgetContainer = WidgetContainer(this).also {
             it.settings = settings
             it.themeManager = themeManager
@@ -147,11 +152,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Clear any lingering swipe-direction override so slot and drawer
-        // launches keep the default open animation.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, 0, 0)
-        }
         applyTheme()
         collapseFolder()
         widgetContainer.rebuild()
@@ -443,35 +443,39 @@ class MainActivity : AppCompatActivity() {
     private fun handleSwipeLeft() {
         if (!settings.swipeLeftEnabled) return
         // Swiping left pulls the app in from the right edge.
-        if (!launchSwipeApp(settings.swipeLeftApp)) openCameraApp(this)
-        applySwipeTransition(R.anim.slide_in_right)
+        if (!launchSwipeApp(settings.swipeLeftApp, R.anim.slide_in_right)) {
+            openCameraApp(this, swipeAnimOptions(R.anim.slide_in_right))
+        }
     }
 
     private fun handleSwipeRight() {
         if (!settings.swipeRightEnabled) return
         // Swiping right pulls the app in from the left edge.
-        if (!launchSwipeApp(settings.swipeRightApp)) openDialerApp(this)
-        applySwipeTransition(R.anim.slide_in_left)
-    }
-
-    /**
-     * Directional open transition for the launch we just kicked off.
-     * ActivityOptions animations are ignored for cross-task launches on
-     * modern Android, so override on the activity instead; the API 34+
-     * override is persistent and gets reset in onResume.
-     */
-    private fun applySwipeTransition(enterAnim: Int) {
-        if (isEinkDisplay()) return
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, enterAnim, 0)
-        } else {
-            @Suppress("DEPRECATION")
-            overridePendingTransition(enterAnim, 0)
+        if (!launchSwipeApp(settings.swipeRightApp, R.anim.slide_in_left)) {
+            openDialerApp(this, swipeAnimOptions(R.anim.slide_in_left))
         }
     }
 
+    /**
+     * Cross-task launches only honor animations sent in the launch's
+     * ActivityOptions bundle; overrideActivityTransition/
+     * overridePendingTransition on the launcher are ignored for them
+     * (verified on-device, API 34+).
+     */
+    /**
+     * The animation must ride along in the launch's ActivityOptions:
+     * overrideActivityTransition/overridePendingTransition are ignored for
+     * cross-task launches. The system only honors it when the launch opens
+     * a fresh task; bringing an existing task back to front always plays
+     * the system default — customizing that needs privileged permissions a
+     * third-party launcher can't hold (all verified on-device, API 34+).
+     */
+    private fun swipeAnimOptions(enterAnim: Int): android.os.Bundle? =
+        if (isEinkDisplay()) null
+        else android.app.ActivityOptions.makeCustomAnimation(this, enterAnim, 0).toBundle()
+
     /** Value is "pkg|activity|user|shortcutId"; trailing parts are optional. */
-    private fun launchSwipeApp(value: String?): Boolean {
+    private fun launchSwipeApp(value: String?, enterAnim: Int): Boolean {
         if (value.isNullOrBlank()) return false
         val parts = value.split("|")
         return appRepo.launch(
@@ -479,6 +483,7 @@ class MainActivity : AppCompatActivity() {
             parts.getOrNull(1)?.ifBlank { null },
             parts.getOrNull(2)?.ifBlank { null } ?: USER_PERSONAL,
             parts.getOrNull(3)?.ifBlank { null },
+            swipeAnimOptions(enterAnim),
         )
     }
 
