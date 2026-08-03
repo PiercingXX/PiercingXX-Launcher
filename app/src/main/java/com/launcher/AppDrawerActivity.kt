@@ -129,6 +129,9 @@ class AppDrawerActivity : AppCompatActivity() {
      * Over-scrolling past the top closes the drawer; reaching the top
      * re-summons the keyboard; scrolling down hides it.
      */
+    // The listener returns false and never consumes a click, so the
+    // ScrollView's own click/accessibility handling is untouched.
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
     private fun initScrollBehavior() {
         var downY = 0f
         var startedAtTop = false
@@ -169,8 +172,12 @@ class AppDrawerActivity : AppCompatActivity() {
         }
     }
 
+    // Only slots that actually render are excluded from browsing — otherwise
+    // lowering the slot count would strand an app: off the home screen and
+    // out of the drawer at the same time.
     private fun homeSlotKeys(): Set<String> = buildSet {
-        for (slot in 1..SettingsRepository.MAX_SLOTS) {
+        val visible = settings.slotCount.coerceIn(0, SettingsRepository.MAX_SLOTS)
+        for (slot in 1..visible) {
             val entry = settings.getSlot(slot)
             if (!entry.isFolder && entry.packageName.isNotBlank()) {
                 add("${entry.packageName}|${entry.userToken}")

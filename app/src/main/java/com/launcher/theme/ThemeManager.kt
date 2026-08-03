@@ -2,11 +2,8 @@ package com.launcher.theme
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import androidx.appcompat.app.AppCompatDelegate
 import com.launcher.data.SettingsRepository
-import android.graphics.Color
-import android.os.Build
 
 data class ThemeColors(
     val backgroundColor: Int,

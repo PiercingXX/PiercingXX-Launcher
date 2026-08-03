@@ -209,10 +209,10 @@
         android:title="About"
         app:iconSpaceReserved="false">
 
+        <!-- summary is filled in at runtime from BuildConfig.VERSION_NAME -->
         <Preference
             android:key="version"
             android:title="Version"
-            android:summary="1.0"
             app:iconSpaceReserved="false" />
 
     </PreferenceCategory>

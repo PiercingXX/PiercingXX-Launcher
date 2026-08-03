@@ -15,7 +15,6 @@ data class SlotEntry(
 ) {
     val isEmpty: Boolean get() = label.isBlank() && packageName.isBlank() && folderId < 0
     val isFolder: Boolean get() = folderId >= 0
-    val isShortcut: Boolean get() = shortcutId.isNotBlank()
 }
 
 class SettingsRepository(context: Context) {
@@ -71,12 +70,6 @@ class SettingsRepository(context: Context) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    fun registerListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) =
-        prefs.registerOnSharedPreferenceChangeListener(listener)
-
-    fun unregisterListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) =
-        prefs.unregisterOnSharedPreferenceChangeListener(listener)
-
     // Home
     var slotCount: Int
         // The settings screen stores ListPreference values as strings.
@@ -108,8 +101,6 @@ class SettingsRepository(context: Context) {
         }
 
     val widgetsEnabled: Set<String> get() = widgetsOrder.toSet()
-
-    val weatherEnabled: Boolean get() = "weather" in widgetsEnabled
 
     /** Tap override for a widget: "pkg|activity|user", or "" for the default action. */
     fun getWidgetTapAction(widget: String): String =
@@ -221,9 +212,6 @@ class SettingsRepository(context: Context) {
     }
 
     fun clearSlot(slot: Int) = setSlot(slot, SlotEntry())
-
-    fun setSlotLabel(slot: Int, label: String) =
-        prefs.edit { putString(slotLabelKey(slot), label) }
 
     /** Clears every home slot pointing at the given folder (after deletion). */
     fun clearSlotsForFolder(folderId: Int) {

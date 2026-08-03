@@ -6,15 +6,6 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.flow.Flow
 
-@Entity(tableName = "home_slots")
-data class HomeSlot(
-    @PrimaryKey val slotIndex: Int,
-    val appId: String,
-    val label: String,
-    val isFolder: Boolean,
-    val folderId: Int?
-)
-
 @Entity(tableName = "folders")
 data class Folder(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -32,27 +23,6 @@ data class FolderMember(
 )
 
 @Dao
-interface HomeSlotDao {
-    @Query("SELECT * FROM home_slots ORDER BY slotIndex ASC")
-    fun getAllSlots(): Flow<List<HomeSlot>>
-
-    @Query("SELECT * FROM home_slots WHERE slotIndex = :index LIMIT 1")
-    fun getSlot(index: Int): Flow<HomeSlot?>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(slot: HomeSlot)
-
-    @Update
-    suspend fun update(slot: HomeSlot)
-
-    @Delete
-    suspend fun delete(slot: HomeSlot)
-
-    @Query("DELETE FROM home_slots WHERE slotIndex = :index")
-    suspend fun clearSlot(index: Int)
-}
-
-@Dao
 interface FolderDao {
     @Query("SELECT * FROM folders ORDER BY sortOrder ASC")
     fun getAllFolders(): Flow<List<Folder>>
@@ -68,9 +38,6 @@ interface FolderDao {
 
     @Delete
     suspend fun delete(folder: Folder)
-
-    @Query("DELETE FROM folders WHERE id = :id")
-    suspend fun clearFolder(id: Int)
 
     @Query("SELECT COUNT(*) FROM folders")
     suspend fun count(): Int
@@ -102,12 +69,11 @@ interface FolderDao {
 }
 
 @Database(
-    entities = [HomeSlot::class, Folder::class, FolderMember::class],
-    version = 2,
+    entities = [Folder::class, FolderMember::class],
+    version = 3,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun homeSlotDao(): HomeSlotDao
     abstract fun folderDao(): FolderDao
 
     companion object {
@@ -127,13 +93,24 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        /**
+         * Drops the never-used home_slots table. Home slots have always lived
+         * in SharedPreferences; the table was created but never read or
+         * written, so there is nothing to carry forward.
+         */
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("DROP TABLE IF EXISTS home_slots")
+            }
+        }
+
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
                     "launcher.db"
-                ).addMigrations(MIGRATION_1_2).build()
+                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build()
                 INSTANCE = instance
                 instance
             }

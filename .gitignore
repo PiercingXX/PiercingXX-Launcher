@@ -20,3 +20,6 @@ local.properties
 # Android Studio
 *.log
 *.cache
+.kotlin/
+captures/
+*.apk

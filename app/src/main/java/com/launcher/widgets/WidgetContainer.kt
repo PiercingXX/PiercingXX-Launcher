@@ -131,7 +131,7 @@ class WidgetContainer @JvmOverloads constructor(
         }
 
         applyLauncherFont(settings.fontFamily)
-        registerReceivers()
+        syncReceivers()
     }
 
     /** Runs a configured "pkg|activity|user" tap override; false = use default. */
@@ -210,38 +210,58 @@ class WidgetContainer @JvmOverloads constructor(
         weatherLoading = true
         weatherView?.text = weatherText()
         weatherJob = scope.launch {
-            val result = fetchWeatherSummary(context, settings.weatherTempUnit == "fahrenheit")
-            if (result is WeatherResult.Success) {
-                settings.weatherCachedSummary = result.summary
-                settings.weatherCachedAt = System.currentTimeMillis()
+            try {
+                val result = fetchWeatherSummary(context, settings.weatherTempUnit == "fahrenheit")
+                if (result is WeatherResult.Success) {
+                    settings.weatherCachedSummary = result.summary
+                    settings.weatherCachedAt = System.currentTimeMillis()
+                }
+            } finally {
+                // Must clear even when the job is cancelled on detach —
+                // otherwise the flag latches and every later refresh no-ops.
+                weatherLoading = false
             }
             // On failure the stale cached reading stays visible.
-            weatherLoading = false
             weatherView?.text = weatherText()
         }
     }
 
-    private fun registerReceivers() {
-        if (!timeTickRegistered && (clockView != null || dateView != null)) {
+    // Receivers follow the widgets: registered when their widget appears,
+    // dropped when it is turned off, so a disabled widget stops waking the app.
+    private fun syncReceivers() {
+        val wantTimeTick = clockView != null || dateView != null
+        if (wantTimeTick && !timeTickRegistered) {
             context.registerReceiver(timeTickReceiver, IntentFilter(Intent.ACTION_TIME_TICK))
             timeTickRegistered = true
+        } else if (!wantTimeTick) {
+            unregisterTimeTick()
         }
-        if (!batteryRegistered && batteryView != null) {
+
+        val wantBattery = batteryView != null
+        if (wantBattery && !batteryRegistered) {
             context.registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
             batteryRegistered = true
+        } else if (!wantBattery) {
+            unregisterBattery()
         }
+    }
+
+    private fun unregisterTimeTick() {
+        if (!timeTickRegistered) return
+        runCatching { context.unregisterReceiver(timeTickReceiver) }
+        timeTickRegistered = false
+    }
+
+    private fun unregisterBattery() {
+        if (!batteryRegistered) return
+        runCatching { context.unregisterReceiver(batteryReceiver) }
+        batteryRegistered = false
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        if (timeTickRegistered) {
-            runCatching { context.unregisterReceiver(timeTickReceiver) }
-            timeTickRegistered = false
-        }
-        if (batteryRegistered) {
-            runCatching { context.unregisterReceiver(batteryReceiver) }
-            batteryRegistered = false
-        }
+        unregisterTimeTick()
+        unregisterBattery()
         weatherJob?.cancel()
     }
 

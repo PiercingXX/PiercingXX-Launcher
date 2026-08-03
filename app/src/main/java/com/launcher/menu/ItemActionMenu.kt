@@ -1,6 +1,5 @@
 package com.launcher.menu
 
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
@@ -14,6 +13,8 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.launcher.R
 import com.launcher.data.AppInfo
 import com.launcher.data.AppRepository
@@ -28,7 +29,6 @@ import com.launcher.util.requestUninstall
 import com.launcher.util.showToast
 import com.launcher.util.userFromToken
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -46,7 +46,13 @@ class ItemActionMenu(
     private val folders: FolderManager? = null,
 ) {
 
-    private val scope: CoroutineScope = MainScope()
+    /**
+     * Tied to the host activity when there is one, so a sheet that resolves
+     * after the activity is gone never calls show() on a dead window.
+     * MainScope is only the fallback for a non-lifecycle context.
+     */
+    private val scope: CoroutineScope =
+        (context as? LifecycleOwner)?.lifecycleScope ?: MainScope()
 
     fun showAppMenu(
         app: AppInfo,

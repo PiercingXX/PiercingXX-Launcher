@@ -36,7 +36,6 @@ class FolderOrderTest {
                 packageName = activity.componentName.packageName,
                 activityClassName = activity.componentName.className,
                 label = activity.label.toString(),
-                originalLabel = activity.label.toString(),
                 userToken = serializeUser(user),
                 isSystem = false,
                 installedAt = 0L,

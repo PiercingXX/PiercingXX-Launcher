@@ -12,7 +12,6 @@ class AppInfoMatchTest {
         packageName = "com.example",
         activityClassName = null,
         label = label,
-        originalLabel = label,
         userToken = USER_PERSONAL,
         isSystem = false,
         installedAt = 0L,

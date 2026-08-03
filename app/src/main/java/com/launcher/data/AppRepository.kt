@@ -6,7 +6,6 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.os.Build
-import android.os.Process
 import android.os.UserHandle
 import android.os.UserManager
 import android.util.Log
@@ -30,7 +29,6 @@ data class AppInfo(
     val packageName: String,
     val activityClassName: String?,
     val label: String,
-    val originalLabel: String,
     val userToken: String,
     val isSystem: Boolean,
     val installedAt: Long,
@@ -125,7 +123,6 @@ class AppRepository(private val context: Context, private val settings: Settings
                         packageName = packageName,
                         activityClassName = activity.componentName.className,
                         label = rename.ifBlank { original },
-                        originalLabel = original,
                         userToken = token,
                         isSystem = (activity.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0,
                         installedAt = activity.firstInstallTime,
@@ -166,7 +163,6 @@ class AppRepository(private val context: Context, private val settings: Settings
                             packageName = shortcut.`package`,
                             activityClassName = null,
                             label = rename.ifBlank { original },
-                            originalLabel = original,
                             userToken = token,
                             isSystem = false,
                             installedAt = 0L,
@@ -223,9 +219,6 @@ class AppRepository(private val context: Context, private val settings: Settings
             }
         }
     }
-
-    fun getApp(packageName: String, userToken: String): AppInfo? =
-        _apps.value?.firstOrNull { it.packageName == packageName && it.userToken == userToken }
 
     /** Launches into the right profile via LauncherApps. */
     fun launch(

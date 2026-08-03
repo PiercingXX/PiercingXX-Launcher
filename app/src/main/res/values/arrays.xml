@@ -51,28 +51,6 @@
         <item>date_time</item>
     </string-array>
     
-    <!-- Widget entries -->
-    <string-array name="widget_entries">
-        <item>Clock</item>
-        <item>Date</item>
-        <item>Battery</item>
-        <item>Weather</item>
-    </string-array>
-    
-    <string-array name="widget_values">
-        <item>clock</item>
-        <item>date</item>
-        <item>battery</item>
-        <item>weather</item>
-    </string-array>
-    
-    <string-array name="default_widgets">
-        <item>clock</item>
-        <item>date</item>
-        <item>battery</item>
-        <item>weather</item>
-    </string-array>
-    
     <!-- Temperature unit entries -->
     <string-array name="temp_unit_entries">
         <item>Fahrenheit</item>
@@ -112,27 +90,6 @@
         <item>notifications</item>
         <item>web_search</item>
         <item>disabled</item>
-    </string-array>
-    
-    <!-- Theme presets -->
-    <string-array name="theme_presets">
-        <item>AMOLED (Pure Black)</item>
-        <item>Graphite</item>
-        <item>Forest</item>
-        <item>Ocean</item>
-        <item>Paper (Light)</item>
-        <item>Mist (Light)</item>
-        <item>Custom</item>
-    </string-array>
-    
-    <string-array name="theme_preset_values">
-        <item>amoled</item>
-        <item>graphite</item>
-        <item>forest</item>
-        <item>ocean</item>
-        <item>paper</item>
-        <item>mist</item>
-        <item>custom</item>
     </string-array>
     
     <!-- Font entries -->

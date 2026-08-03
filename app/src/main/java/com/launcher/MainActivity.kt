@@ -102,6 +102,10 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { }
 
+    // The home container's touch listener drives a GestureDetector; the same
+    // actions are exposed to TalkBack as explicit accessibility actions in
+    // initAccessibilityActions(), so there is no click to forward.
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -456,12 +460,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Cross-task launches only honor animations sent in the launch's
-     * ActivityOptions bundle; overrideActivityTransition/
-     * overridePendingTransition on the launcher are ignored for them
-     * (verified on-device, API 34+).
-     */
     /**
      * The animation must ride along in the launch's ActivityOptions:
      * overrideActivityTransition/overridePendingTransition are ignored for

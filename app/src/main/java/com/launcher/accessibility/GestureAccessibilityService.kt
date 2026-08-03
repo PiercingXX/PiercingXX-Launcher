@@ -1,6 +1,7 @@
 package com.launcher.accessibility
 
 import android.accessibilityservice.AccessibilityService
+import android.os.Build
 import android.view.accessibility.AccessibilityEvent
 
 /**
@@ -29,10 +30,15 @@ class GestureAccessibilityService : AccessibilityService() {
         var instance: GestureAccessibilityService? = null
             private set
 
-        val isRunning: Boolean get() = instance != null
-
-        fun lockScreen(): Boolean =
-            instance?.performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN) ?: false
+        /**
+         * GLOBAL_ACTION_LOCK_SCREEN is API 28+. The constant inlines, so the
+         * call would not crash on 24-27 — it would just silently return
+         * false and look like the service was never enabled.
+         */
+        fun lockScreen(): Boolean {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return false
+            return instance?.performGlobalAction(GLOBAL_ACTION_LOCK_SCREEN) ?: false
+        }
 
         fun openRecents(): Boolean =
             instance?.performGlobalAction(GLOBAL_ACTION_RECENTS) ?: false

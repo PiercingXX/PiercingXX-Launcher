@@ -55,8 +55,11 @@ class FolderManager(
         val stale = mutableListOf<FolderMember>()
 
         rows.forEach { row ->
-            val packageName = row.appId.substringBefore("|")
-            val userToken = row.appId.substringAfter("|", "personal")
+            // Keys are "package|userToken", or "package|shortcutId|userToken"
+            // for pinned shortcuts — so the profile is always the LAST part.
+            val parts = row.appId.split("|")
+            val packageName = parts.first()
+            val userToken = parts.getOrNull(parts.lastIndex.coerceAtLeast(1)) ?: "personal"
             val user = context.userFromToken(userToken)
             val activity = runCatching {
                 launcherApps.getActivityList(packageName, user).firstOrNull()
@@ -72,7 +75,6 @@ class FolderManager(
                     packageName = packageName,
                     activityClassName = activity.componentName.className,
                     label = rename.ifBlank { original },
-                    originalLabel = original,
                     userToken = serializeUser(user),
                     isSystem = false,
                     installedAt = activity.firstInstallTime,

@@ -32,26 +32,21 @@
     <string name="action_done">Done</string>
     
     <!-- Weather -->
-    <string name="weather_permission_rationale">Weather requires location access to show local conditions.</string>
-    <string name="weather_refresh">Refresh</string>
     <string name="weather_loading">Loading…</string>
     
     <!-- Folders -->
-    <string name="folder_member_count">%d apps</string>
     <string name="rearrange_title">Rearrange %s</string>
     <string name="rearrange_up">▲</string>
     <string name="rearrange_down">▼</string>
     
     <!-- Search -->
     <string name="search_hint">Search apps…</string>
-    <string name="search_no_results">No apps found</string>
     <string name="search_web_prefix">Web: </string>
     
     <!-- Messages -->
     <string name="toast_already_at_top">Already at top</string>
     <string name="toast_already_at_bottom">Already at bottom</string>
     <string name="toast_disabled_until">Disabled until %s</string>
-    <string name="toast_renamed">Renamed</string>
     <string name="toast_hidden">Hidden</string>
     <string name="toast_shown">Shown</string>
     <string name="toast_folder_empty">Folder is empty</string>
@@ -77,6 +72,7 @@
     <string name="disable_for_hours">%d hours</string>
     <string name="action_remove_from_folder">Remove from Folder</string>
     <string name="confirm_delete_folder">Delete folder \"%s\"?</string>
+    <string name="picker_title">Select App</string>
     <string name="picker_clear_slot">Clear slot</string>
     <string name="no_hidden_apps">No hidden apps</string>
     <string name="pref_hidden_apps">Hidden Apps</string>
@@ -98,15 +94,13 @@
     <string name="accessibility_service_description">Lets the launcher lock the screen on double-tap and open recents. No data is collected and nothing leaves the device.</string>
 
     <!-- Accessibility -->
-    <string name="accessibility_home_slot">Home slot %d</string>
     <string name="accessibility_home_slot_empty">Empty home slot %d, long-press to assign</string>
-    <string name="accessibility_home_slot_filled">%s, home slot %d</string>
+    <string name="accessibility_home_slot_filled">%1$s, home slot %2$d</string>
     <string name="accessibility_open_app_drawer">Open app drawer</string>
     <string name="accessibility_open_settings">Open launcher settings</string>
-    <string name="accessibility_folder_row">Folder %s, %d members</string>
+    <string name="accessibility_folder_row">Folder %1$s, %2$d members</string>
     <string name="accessibility_pinned">Pinned</string>
     <string name="accessibility_work_profile">Work profile</string>
-    <string name="accessibility_folder_member_count">%d members</string>
     <string name="accessibility_new_app">New</string>
     <string name="accessibility_move_up">Move %s up</string>
     <string name="accessibility_move_down">Move %s down</string>

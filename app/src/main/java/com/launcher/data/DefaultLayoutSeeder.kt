@@ -204,7 +204,6 @@ object DefaultLayoutSeeder {
         packageName = packageName,
         activityClassName = activityClassName,
         label = label,
-        originalLabel = label,
         userToken = USER_PERSONAL,
         isSystem = false,
         installedAt = 0L,

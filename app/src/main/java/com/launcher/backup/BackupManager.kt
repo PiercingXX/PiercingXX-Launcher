@@ -1,6 +1,5 @@
 package com.launcher.backup
 
-import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.launcher.data.SettingsRepository
@@ -50,6 +49,11 @@ data class BackupSlot(
     val userToken: String,
     /** Folder *name* — folder ids are not stable across restores. */
     val folderName: String?,
+    /**
+     * Set when the slot points at an Android pinned shortcut. Nullable so
+     * backups written before this field existed still import.
+     */
+    val shortcutId: String? = null,
 )
 
 data class BackupFolder(
@@ -62,7 +66,6 @@ data class BackupFolder(
  * validates the full payload before writing anything.
  */
 class BackupManager(
-    private val context: Context,
     private val settings: SettingsRepository,
     private val folders: FolderManager,
 ) {
@@ -89,6 +92,7 @@ class BackupManager(
                 activityClassName = entry.activityClassName,
                 userToken = entry.userToken,
                 folderName = folderNamesById[entry.folderId],
+                shortcutId = entry.shortcutId.ifBlank { null },
             )
         }
 
@@ -185,15 +189,17 @@ class BackupManager(
                 ?: continue
             nameToId[folder.name] = created.id
             folder.members.forEach { memberKey ->
-                val packageName = memberKey.substringBefore("|")
-                val userToken = memberKey.substringAfter("|", "personal")
+                // See FolderManager.getMembers: the profile is the last part,
+                // since shortcut keys carry an extra id in the middle.
+                val parts = memberKey.split("|")
+                val packageName = parts.first()
+                val userToken = parts.getOrNull(parts.lastIndex.coerceAtLeast(1)) ?: "personal"
                 folders.addMember(
                     created.id,
                     com.launcher.data.AppInfo(
                         packageName = packageName,
                         activityClassName = null,
                         label = packageName,
-                        originalLabel = packageName,
                         userToken = userToken,
                         isSystem = false,
                         installedAt = 0L,
@@ -213,6 +219,7 @@ class BackupManager(
                     activityClassName = slot.activityClassName,
                     userToken = slot.userToken,
                     folderId = slot.folderName?.let { nameToId[it] } ?: -1,
+                    shortcutId = slot.shortcutId.orEmpty(),
                 ),
             )
         }

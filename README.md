@@ -73,7 +73,7 @@ Settings → Default Launcher).
 
 ## Version
 
-0.61
+0.7
 
 ## License
 

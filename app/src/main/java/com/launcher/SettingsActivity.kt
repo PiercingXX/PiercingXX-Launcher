@@ -68,14 +68,17 @@ class SettingsActivity : AppCompatActivity() {
 
         private val app get() = LauncherApplication.from(requireContext())
         private val backupManager by lazy {
-            BackupManager(requireContext(), app.settings, app.folders)
+            BackupManager(app.settings, app.folders)
         }
 
         private val exportLauncher = registerForActivityResult(
             ActivityResultContracts.CreateDocument("application/json")
         ) { uri: Uri? ->
             uri ?: return@registerForActivityResult
-            viewLifecycleOwner.lifecycleScope.launch {
+            // The fragment's own scope, not viewLifecycleOwner's: an activity
+            // result can land before onCreateView, and viewLifecycleOwner
+            // throws in that window.
+            lifecycleScope.launch {
                 runCatching {
                     val json = backupManager.exportToJson()
                     requireContext().contentResolver.openOutputStream(uri)?.use {
@@ -92,7 +95,10 @@ class SettingsActivity : AppCompatActivity() {
             ActivityResultContracts.OpenDocument()
         ) { uri: Uri? ->
             uri ?: return@registerForActivityResult
-            viewLifecycleOwner.lifecycleScope.launch {
+            // The fragment's own scope, not viewLifecycleOwner's: an activity
+            // result can land before onCreateView, and viewLifecycleOwner
+            // throws in that window.
+            lifecycleScope.launch {
                 val result = runCatching {
                     val json = requireContext().contentResolver.openInputStream(uri)
                         ?.bufferedReader()?.use { it.readText() }
